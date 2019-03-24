@@ -1,10 +1,8 @@
 package v1
 
 import (
+	"log"
 	"context"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"github.com/jinzhu/gorm"
 
 	"github.com/maulidihsan/rujuk/pkg/api/v1"
@@ -17,7 +15,7 @@ type service struct {
 
 func NewDiscoveryServiceServer(db *gorm.DB) v1.DiscoveryServiceServer {
 	if !db.HasTable(&model.Rumahsakit{}) {
-		if err := db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf-8").CreateTable(&model.Rumahsakit{}).Error; err != nil {
+		if err := db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8").CreateTable(&model.Rumahsakit{}).Error; err != nil {
 			panic(err)
 		}
 	}
@@ -29,16 +27,16 @@ func (s *service) transformRumahsakitToRPC(in *model.Rumahsakit) *v1.Rumahsakit 
 		return nil
 	}
 	res := &v1.Rumahsakit{
-		ID: in.ID,
+		Id: uint32(in.ID),
 		Nama: in.NamaRumahsakit,
 		Ip: in.IP,
 	}
 	return res
 }
 
-func (s *service) GetAllRumahsakit(req *v1.FetchRequest, stream v1.RujukService_GetAllRoomServer) error {
-	offset := 0
-	limit := 10
+func (s *service) GetAllRumahsakit(req *v1.FetchRequest, stream v1.DiscoveryService_GetAllRumahsakitServer) error {
+	offset := int32(0)
+	limit := int32(10)
 	if req != nil {
 		offset = req.Offset
 		limit = req.Limit
@@ -49,21 +47,22 @@ func (s *service) GetAllRumahsakit(req *v1.FetchRequest, stream v1.RujukService_
 		return err
 	}
 	for _, rs := range rumahsakit {
-		r := s.transformRumahsakitToRPC(rs)
+		r := s.transformRumahsakitToRPC(&rs)
 		if err := stream.Send(r); err != nil {
 			log.Println(err.Error())
 			return err
 		}
 	}
+	return nil
 }
 
-func (s *service) Register(req *v1.Rumahsakit) (*v1.Response, error) {
+func (s *service) Register(ctx context.Context, req *v1.Rumahsakit) (*v1.Response, error) {
 	if req == nil {
 		//TODO: mekanisme return error kalau kosong
 	}
-	rumahsakit = model.Rumahsakit{
+	rumahsakit := model.Rumahsakit{
 		NamaRumahsakit: req.Nama,
-		IP: req.Ip
+		IP: req.Ip,
 	}
 	if err := s.db.Where(model.Rumahsakit{IP: req.Ip}).FirstOrCreate(&rumahsakit).Error; err != nil {
 		return nil, err
@@ -71,6 +70,6 @@ func (s *service) Register(req *v1.Rumahsakit) (*v1.Response, error) {
 
 	return &v1.Response{
 		Kode: 200,
-		Pesan: "Registrasi berhasil"
+		Pesan: "Registrasi berhasil",
 	}, nil
 }

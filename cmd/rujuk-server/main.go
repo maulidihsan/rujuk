@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"context"
@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"google.golang.org/grpc"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	service "github.com/maulidihsan/rujuk/pkg/service/v1"
 	api "github.com/maulidihsan/rujuk/pkg/api/v1"
@@ -24,6 +23,7 @@ type Config struct {
 	DatastoreDBUser string
 	DatastoreDBPassword string
 	DatastoreDBName string
+	DatastoreDBPort string
 }
 
 func RunServer() error {
@@ -41,24 +41,26 @@ func RunServer() error {
 	if len(cfg.GRPCPort) == 0 {
 		return fmt.Errorf("invalid TCP port for gRPC server: '%s'", cfg.GRPCPort)
 	}
-
-	if len(cfg.HTTPPort) == 0 {
-		return fmt.Errorf("invalid TCP port for HTTP gateway: '%s'", cfg.HTTPPort)
+	if len(cfg.DatastoreDBPort) == 0 {
+		cfg.DatastoreDBPort = "3306"
+	}
+	if len(cfg.DatastoreDBHost) == 0 {
+		cfg.DatastoreDBHost = "127.0.0.1"
 	}
 
-	dsn := fmt.Sprintf("%s:%s@%s:%s/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		cfg.DatastoreDBUser,
 		cfg.DatastoreDBPassword,
 		cfg.DatastoreDBHost,
 		cfg.DatastoreDBPort,
 		cfg.DatastoreDBName)
 
-	db, err := database.Init(dsn)
+	conn, err := database.Init(dsn)
 	if err != nil {
 		return fmt.Errorf("failed to open database: %v", err)
 	}
-
-	v1API := service.NewRujukServiceServer(db.GetDB())
+	defer conn.DB.Close()
+	v1API := service.NewRujukServiceServer(conn.GetDB())
 
 	listenGRPC, err := net.Listen("tcp", ":"+cfg.GRPCPort)
 	if err != nil {
@@ -80,4 +82,11 @@ func RunServer() error {
 
 	fmt.Println("starting grpc server")
 	return server.Serve(listenGRPC)
+}
+
+func main() {
+	if err := RunServer(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
 }

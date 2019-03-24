@@ -3,7 +3,7 @@ package v1;
 
 message Room {
     // id ruangan
-    int64 id = 1;
+    uint32 id = 1;
 
     // nama ruangan
     string nama = 2;
@@ -25,7 +25,7 @@ message Pasien {
 
 message RequestRujuk {
     // id ruangan
-    int64 id = 1;
+    uint32 id = 1;
 
     Pasien pasien = 2;
 }

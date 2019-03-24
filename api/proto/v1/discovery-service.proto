@@ -1,24 +1,20 @@
 syntax = "proto3";
 package v1;
+import "rujuk-service.proto";
 
 message Rumahsakit {
+    // id ruangan
+    uint32 id = 1;
+
     // nama rumah sakit
-    string nama = 1;
+    string nama = 2;
 
     // ip rumah sakit
-    fixed32 ip = 2;
-}
-
-message Response {
-    // response code
-    int32 kode = 1
-
-    // message response
-    string pesan = 2;
+    string ip = 3;
 }
 
 service DiscoveryService {
-    rpc GetAllRumahsakit() returns (stream Rumahsakit){}
+    rpc GetAllRumahsakit(FetchRequest) returns (stream Rumahsakit){}
 
     rpc Register(Rumahsakit) returns (Response){}
 }
