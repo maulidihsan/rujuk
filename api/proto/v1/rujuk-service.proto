@@ -1,0 +1,55 @@
+syntax = "proto3";
+package v1;
+
+message Room {
+    // id ruangan
+    int64 id = 1;
+
+    // nama ruangan
+    string nama = 2;
+
+    // tipe ruangan
+    string type = 3;
+
+    // jumlah
+    int32 jumlah = 4;
+}
+
+message Pasien {
+    // nama pasien
+    string nama = 1;
+
+    // diagnosa penyakit
+    string diagnosa = 2;
+}
+
+message RequestRujuk {
+    // id ruangan
+    int64 id = 1;
+
+    Pasien pasien = 2;
+}
+
+message Response {
+    // response code
+    int32 kode = 1;
+
+    // message response
+    string pesan = 2;
+}
+
+message FetchRequest {
+    // cursor
+    int32 offset = 1;
+
+    // limit
+    int32 limit = 2;
+}
+
+// Service definition
+service RujukService {
+
+    rpc GetAllRoom(FetchRequest) returns (stream Room){}
+
+    rpc RequestRoom(RequestRujuk) returns (Response){}
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+package v1;
+
+message Rumahsakit {
+    // nama rumah sakit
+    string nama = 1;
+
+    // ip rumah sakit
+    fixed32 ip = 2;
+}
+
+message Response {
+    // response code
+    int32 kode = 1
+
+    // message response
+    string pesan = 2;
+}
+
+service DiscoveryService {
+    rpc GetAllRumahsakit() returns (stream Rumahsakit){}
+
+    rpc Register(Rumahsakit) returns (Response){}
+}
