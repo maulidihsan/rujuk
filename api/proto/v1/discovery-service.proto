@@ -13,8 +13,12 @@ message Rumahsakit {
     string ip = 3;
 }
 
+message Rumahsakits {
+    repeated Rumahsakit rumahsakits = 1;
+}
+
 service DiscoveryService {
-    rpc GetAllRumahsakit(FetchRequest) returns (stream Rumahsakit){}
+    rpc GetAllRumahsakit(FetchRequest) returns (Rumahsakits){}
 
     rpc Register(Rumahsakit) returns (Response){}
 }

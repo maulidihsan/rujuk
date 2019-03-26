@@ -15,6 +15,10 @@ message Room {
     int32 jumlah = 4;
 }
 
+message Rooms {
+    repeated Room rooms = 1;
+}
+
 message Pasien {
     // nama pasien
     string nama = 1;
@@ -49,7 +53,7 @@ message FetchRequest {
 // Service definition
 service RujukService {
 
-    rpc GetAllRoom(FetchRequest) returns (stream Room){}
+    rpc GetAllRoom(FetchRequest) returns (Rooms){}
 
     rpc RequestRoom(RequestRujuk) returns (Response){}
 }

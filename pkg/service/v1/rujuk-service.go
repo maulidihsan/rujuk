@@ -1,7 +1,6 @@
 package v1;
 
 import (
-	"log"
 	"context"
 	"github.com/jinzhu/gorm"
 
@@ -40,7 +39,7 @@ func (s *rujuk) transformRoomToRPC(in *model.Room) *v1.Room {
 	return res
 }
 
-func (s *rujuk) GetAllRoom(req *v1.FetchRequest, stream v1.RujukService_GetAllRoomServer) error {
+func (s *rujuk) GetAllRoom(ctx context.Context, req *v1.FetchRequest) (*v1.Rooms, error) {
 	offset := int32(0)
 	limit := int32(10)
 	if req != nil {
@@ -50,16 +49,17 @@ func (s *rujuk) GetAllRoom(req *v1.FetchRequest, stream v1.RujukService_GetAllRo
 	var rooms []model.Room
 	err := s.db.Model(&model.Room{}).Offset(offset).Limit(limit).Find(&rooms).Error;
 	if err != nil {
-		return err
+		return nil,err
 	}
-	for _, room := range rooms {
+	payload := make([]*v1.Room, len(rooms))
+	for i, room := range rooms {
 		r := s.transformRoomToRPC(&room)
-		if err := stream.Send(r); err != nil {
-			log.Println(err.Error())
-			return err
-		}
+		payload[i] = r
 	}
-	return nil
+	reply := &v1.Rooms{
+		Rooms: payload,
+	}
+	return reply, nil
 }
 
 func (s *rujuk) RequestRoom(ctx context.Context, req *v1.RequestRujuk) (*v1.Response, error) {

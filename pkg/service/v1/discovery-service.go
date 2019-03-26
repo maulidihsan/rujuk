@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"log"
 	"context"
 	"github.com/jinzhu/gorm"
 
@@ -34,26 +33,27 @@ func (s *service) transformRumahsakitToRPC(in *model.Rumahsakit) *v1.Rumahsakit 
 	return res
 }
 
-func (s *service) GetAllRumahsakit(req *v1.FetchRequest, stream v1.DiscoveryService_GetAllRumahsakitServer) error {
+func (s *service) GetAllRumahsakit(ctx context.Context, req *v1.FetchRequest) (*v1.Rumahsakits, error) {
 	offset := int32(0)
 	limit := int32(10)
 	if req != nil {
 		offset = req.Offset
 		limit = req.Limit
 	}
-	var rumahsakit []model.Rumahsakit
-	err := s.db.Model(&model.Rumahsakit{}).Offset(offset).Limit(limit).Find(&rumahsakit).Error;
-	if err != nil {
-		return err
+	var rumahsakits []model.Rumahsakit
+	if err := s.db.Model(&model.Rumahsakit{}).Offset(offset).Limit(limit).Find(&rumahsakits).Error; err != nil {
+		return nil, err
 	}
-	for _, rs := range rumahsakit {
+	payload := make([]*v1.Rumahsakit, len(rumahsakits))
+	for i, rs := range rumahsakits {
 		r := s.transformRumahsakitToRPC(&rs)
-		if err := stream.Send(r); err != nil {
-			log.Println(err.Error())
-			return err
-		}
+		payload[i] = r
 	}
-	return nil
+
+	reply := &v1.Rumahsakits{
+		Rumahsakits: payload,
+	}
+	return reply, nil
 }
 
 func (s *service) Register(ctx context.Context, req *v1.Rumahsakit) (*v1.Response, error) {
