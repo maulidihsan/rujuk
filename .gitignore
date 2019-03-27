@@ -2,4 +2,5 @@
 bin
 c.out
 vendor
+web/node_modules
 
