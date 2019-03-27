@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"context"
 	"fmt"
-	"strconv"
 	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
@@ -39,6 +38,7 @@ type Service struct {
 }
 
 func Init(db *gorm.DB, discoveryUri string) (*Service, error) {
+	fmt.Println(discoveryUri)
 	if !db.HasTable(&model.Room{}) {
 		if err := db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8").CreateTable(&model.Room{}).Error; err != nil {
 			return nil, err
@@ -49,7 +49,7 @@ func Init(db *gorm.DB, discoveryUri string) (*Service, error) {
 			return nil, err
 		}
 	}
-	discoveryConn, err := grpc.Dial(fmt.Sprintf("%s", discoveryUri, grpc.WithInsecure()))
+	discoveryConn, err := grpc.Dial(fmt.Sprintf("%s", discoveryUri), grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
@@ -79,16 +79,8 @@ func (s *Service) GetMyRooms(c *gin.Context) {
 func (s *Service) ListOtherRS(c *gin.Context) {
 	var query model.Request
 	c.Bind(&query)
-	offset, err := strconv.Atoi(query.Offset)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	limit, err := strconv.Atoi(query.Limit)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	offset := 0
+	limit := 1000
 
 	client := v1.NewDiscoveryServiceClient(s.d)
 
@@ -138,23 +130,13 @@ func (s *Service) ConnectToRs(ip string) error {
 func (s *Service) GetRoomList(c *gin.Context) {
 	var rs model.Rumahsakit
 	c.Bind(&rs)
-	if err := s.ConnectToRs(rs.IP).Error; err != nil {
+	if err := s.ConnectToRs(rs.IP); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	var query model.Request
-	c.Bind(&query)
-	offset, err := strconv.Atoi(query.Offset)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	limit, err := strconv.Atoi(query.Limit)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	offset := 0
+	limit := 1000
 	client := v1.NewRujukServiceClient(s.r)
 	req := v1.FetchRequest{
 		Offset: int32(offset),
@@ -175,23 +157,24 @@ func (s *Service) GetRoomList(c *gin.Context) {
 }
 
 func (s *Service) TransferPasien(c *gin.Context) {
-	var request model.RequestRujuk
+	var request model.TransferRujuk
 	c.Bind(&request)
-	id, err := strconv.Atoi(request.Id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	if err := s.ConnectToRs(request.Ip); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 	client := v1.NewRujukServiceClient(s.r)
 	req := v1.RequestRujuk{
-		Id: uint32(id),
+		Id: uint32(request.Id),
 		Pasien: &v1.Pasien{
 			Nama: request.Pasien.NamaPasien,
 			Diagnosa: request.Pasien.Diagnosa,
 		},
 	}
+	fmt.Printf("%+v\n", request)
 	data, err := client.RequestRoom(context.Background(), &req)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -204,6 +187,7 @@ func (s *Service) TransferPasien(c *gin.Context) {
 func (s *Service) AddPasien(c *gin.Context) {
 	var pasien model.Pasien
 	c.Bind(&pasien)
+	fmt.Println(&pasien)
 	if err := s.db.Create(&pasien).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -214,6 +198,7 @@ func (s *Service) AddPasien(c *gin.Context) {
 func (s *Service) AddRoom(c *gin.Context) {
 	var room model.Room
 	c.Bind(&room)
+	fmt.Println(&room)
 	if err := s.db.Create(&room).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

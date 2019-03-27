@@ -2,6 +2,7 @@ package v1;
 
 import (
 	"context"
+	"fmt"
 	"github.com/jinzhu/gorm"
 
 	"github.com/maulidihsan/rujuk/pkg/api/v1"
@@ -66,8 +67,10 @@ func (s *rujuk) RequestRoom(ctx context.Context, req *v1.RequestRujuk) (*v1.Resp
 	if req == nil {
 		//TODO: mekanisme return error kalau kosong
 	}
+	fmt.Println(req)
 	var ruangan model.Room
 	if err := s.db.Where("id = ?", uint32(req.Id)).First(&ruangan).Error; err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 

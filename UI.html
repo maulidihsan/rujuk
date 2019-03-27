@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RUJUK</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+    crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style type="text/css">
+        .col-full{height:720px;};
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div style="background:#218449; height: 50px" class="row justify-content-center">
+            <h3></h3> 
+        </div>
+        <div class="row">
+            <!--Profil Rumah Sakit-->
+            <div style="background: #5daf82;" class="col-md-2 col-full">
+                <div style="background: white; width: 200px; height: 200px"><br> 
+                    <img src="../pelatihandewe/gambar/hujan.jpg" class="rounded-circle" style="display:block; margin:auto" alt="logo" width="100px" height="100px">
+                    <h4 align="center">Nama Rumah Sakit</h4>
+                </div>
+
+                <!-- MY ROOMS -->
+                <div class="row justify-content-center" style="background:#51936e">
+                    <h4 align="center" style="color:white">MY ROOMS</h4>
+                </div>
+
+                <!-- Input Kamar -->
+                <div class="row justify-content-center" style="padding: 15px; background:#5daf82">
+                    <!-- VVIP -->
+                    <div style="border-radius: 10px; background: #d2ffe4; width: 200px; height: 80px">
+                        <h5 align="center">VVIP</h5>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-sm btn-success">-</button>
+                            <input type="text" name="VVIP" style="width:100px">
+                            <button class="btn btn-sm btn-success">+</button>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- VIP -->
+                    <div style="border-radius: 10px; background: #d2ffe4; width: 200px; height: 80px">
+                        <h5 align="center">VIP</h5>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-sm btn-success">-</button>
+                            <input type="text" name="VIP" style="width:100px">
+                            <button class="btn btn-sm btn-success">+</button>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Kelas 1 -->
+                    <div style="border-radius: 10px; background: #d2ffe4; width: 200px; height: 80px">
+                        <h5 align="center">Kelas 1</h5>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-sm btn-success">-</button>
+                            <input type="text" name="Kelas1" style="width:100px">
+                            <button class="btn btn-sm btn-success">+</button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row" style="padding: 10px">
+                        <button class="btn btn-md btn-success">Add Class</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--List Pasien-->
+            <div style="background: #79e0aa;" class="col-md-7 col-full">
+                <!-- Tulisan Daftar Pasien -->
+                <div style="background:#5daf82; height: 40px; padding: 4px" class="row justify-content-center">
+                    <h4 align="center" style="color:white">Daftar Kamar</h4>
+                </div>
+                <!-- info Pasien -->
+                <div class="container" style="background:#d2ffe4; height: 150px; border-radius: 10px; padding: 10px; margin-top: 20px">
+                    <div class="container" style="padding: 10px">
+                        <!-- header -->
+                        <h3 style="padding-left: 2px">Info Pasien</h3>
+                        <br>
+                        <h5>Nama Pasien: BlaBLa</h5>
+                        <h5>Diagnosa   : BlaBLa</h5>
+                        <!-- <div class="row" style="padding-left: 27px"> <h5>Tipe Kamar : 
+                            <select>
+                                <option>VVIP</option>
+                                <option>VIP</option>
+                                <option>Kelas 1</option>
+                            </select>
+                        </h5></div> -->                     
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                <div class="container" style="background: #d2ffe4; height: 50px; border-radius: 10px; padding: 10px; margin-top: 10px">
+                    <h5>Rumah Sakit A</h5>
+                </div>
+                <h4 style="padding-left: 10px; padding-top: 5px">Pilihan Ruangan</h4>
+                <div class="container" style="background: #d2ffe4; height: 170px; border-radius: 10px; padding: 10px; margin-top: 10px">
+                    <div class="container" style="padding: 10px">
+                        <h5>Nama        : Blala</h5>
+                        <h5>Jumlah      : 1</h5>
+                        <h5>Tipe Kamar  :
+                            <select>
+                                <option>VVIP</option>
+                                <option>VIP</option>
+                                <option>Kelas 1</option>
+                                <option>Kelas 2</option>
+                            </select>
+                        </h5>
+                        <button class="btn btn-md btn-success">Rujuk</button>
+                    </div>
+                </div>
+                <div class="container" style="background: #d2ffe4; height: 170px; border-radius: 10px; padding: 10px; margin-top: 10px">
+                        <div class="container" style="padding: 10px">
+                            <h5>Nama        : Blala</h5>
+                            <h5>Jumlah      : 1</h5>
+                            <h5>Tipe Kamar  :
+                                <select>
+                                    <option>VVIP</option>
+                                    <option>VIP</option>
+                                    <option>Kelas 1</option>
+                                    <option>Kelas 2</option>
+                                </select>
+                            </h5>
+                            <button class="btn btn-md btn-success">Rujuk</button>
+                        </div>
+                    </div>
+                
+            </div>
+
+            <!--list sisa kamar-->
+            <div class="col-md-3 col-full">
+                <div style="background:#51936e; height: 40px; padding: 4px" class="row justify-content-center">
+                    <h4 align="center" style="color:white">List Sisa Kamar</h4>
+                </div>
+                <div class="row" style="padding:10px">
+                    <!-- kotakan -->
+                    <div style="text-align:justify; background:#d2ffe4; border-radius:10px; width: 350px; height: 190px; padding:8px;">
+                        <div class="container" style="padding-left: 10px">
+                            <h5>Nama Rumah Sakit</h5>
+                            <h6>VVIP    4</h6>
+                            <h6>VIP     5</h6>
+                            <h6>Kelas 1 3</h6>
+                            <h6>Kelas 2 6</h6>
+                            <!-- button -->
+                            <button class="btn btn-sm btn-success">Pilih</button>
+                            <button class="btn btn-sm btn-danger">Batal</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding:10px">
+                        <div style="text-align:justify; background: #d2ffe4; border-radius: 10px; width: 350px; height: 190px;padding: 8px;">
+                            <div class="container" style="padding-left: 10px">
+                                <h5>Nama Rumah Sakit</h5>
+                                <h6>VVIP    6</h6>
+                                <h6>VIP     7</h6>
+                                <h6>Kelas 1 10</h6>
+                                <h6>Kelas 2 4</h6>
+                                <!-- button -->
+                                <button class="btn btn-sm btn-success">Pilih</button>
+                                <button class="btn btn-sm btn-danger">Batal</button>
+                            </div>
+                        </div>
+                </div>
+                <div class="row" style="padding:10px">
+                        <div style="text-align:justify; background: #d2ffe4; border-radius: 10px; width: 350px; height: 190px;padding: 8px;">
+                            <div class="container" style="padding-left: 10px">
+                                <h5>Nama Rumah Sakit</h5>
+                                <h6>VVIP    5</h6>
+                                <h6>VIP     3</h6>
+                                <h6>Kelas 1 11</h6>
+                                <h6>Kelas 2 26</h6>
+                                <!-- button -->
+                                <button class="btn btn-sm btn-success">Pilih</button>
+                                <button class="btn btn-sm btn-danger">Batal</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<template>
+    <div class="col-md-8 col-full">
+        <div style="background:#5daf82; height: 40px; padding: 5px" class="row justify-content-md-center">
+            <div class="col-md-3">
+                <h4 style="color:white">Daftar Pasien</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="padding: 10px; border-bottom: 1px solid #c3c3c3;">
+                    <button class="btn btn-sm btn-success" @click="updateStep(1)">Input Pasien</button>
+            </div>
+        </div>
+        <template v-for="(item, index) in pasiens">
+            <div v-if="index % 2 == 0" class="row justify-content-md-center" style="background: #dfdfdf; padding-top: 10px; padding-bottom: 10px;">
+                <div class="col-md-10">
+                    <h5>Nama: {{item.nama_pasien}}</h5>
+                    <h5>Diagnosa: {{item.diagnosa}}</h5>
+                </div>
+                <div class="col-md-2 align-self-center">
+                    <button class="btn btn-sm btn-primary" @click="send(item)">Rujuk</button>
+                </div>
+            </div>
+            <div v-else class="row justify-content-md-center" style="background: #d2ffe4; padding-top: 10px; padding-bottom: 10px;">
+                <div class="col-md-10">
+                    <h5>Nama: {{item.nama_pasien}}</h5>
+                    <h5>Diagnosa: {{item.diagnosa}}</h5>
+                </div>
+                <div class="col-md-2 align-self-center">
+                    <button class="btn btn-sm btn-primary" @click="send(item)">Rujuk</button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
+<script>
+export default {
+    name: 'list-pasien',
+    data() {
+        return {
+            pasiens: []
+        }
+    },
+    methods: {
+        updateStep(index) {
+            this.$emit('chstep', index)
+        },
+        send(item) {
+            this.$emit('pasien', item);
+        },
+    },
+    created() {
+        const self = this;
+        axios.get('http://localhost:8080/pasien', {
+                crossDomain: true
+            })
+            .then(res => {
+                self.pasiens = res.data.data;
+            })
+    },
+}
+</script>

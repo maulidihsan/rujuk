@@ -5,8 +5,10 @@ import (
 	"os"
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/itsjamie/gin-cors"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/maulidihsan/rujuk/pkg/database"
 	"github.com/maulidihsan/rujuk/cmd/rest-client/routers"
@@ -68,17 +70,26 @@ func RunServer() error {
 	}
 
 	r := gin.Default()
+	r.Use(cors.Middleware(cors.Config{
+		Origins:        "*",
+		Methods:        "GET, PUT, POST, DELETE",
+		RequestHeaders: "Origin, Authorization, Content-Type",
+		ExposedHeaders: "",
+		MaxAge: 50 * time.Second,
+		Credentials: true,
+		ValidateHeaders: false,
+	}))
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"msg": "hello"})
 	})
 
-	r.GET("/register", rest.Register)
+	r.POST("/register", rest.Register)
 	r.GET("/pasien", rest.GetMyPasiens)
 	r.GET("/room", rest.GetMyRooms)
 	r.POST("/pasien", rest.AddPasien)
 	r.POST("/room", rest.AddRoom)
 	r.GET("/network", rest.ListOtherRS)
-	r.GET("/network/rooms", rest.GetRoomList)
+	r.POST("/network/rooms", rest.GetRoomList)
 	r.POST("/network/transfer", rest.TransferPasien)
 
 	r.Run(":"+cfg.HTTPPort)
